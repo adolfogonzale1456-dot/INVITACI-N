@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Fiesta Sorpresa</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+
+#startScreen{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100vh;
+  background:radial-gradient(circle at top,#0b3a7a,#041633);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  color:white;
+  font-family:'Great Vibes',cursive;
+  font-size:2.5em;
+  text-align:center;
+  cursor:pointer;
+}
+
+/* 🔧 CORRECCIÓN PRINCIPAL (SCROLL MÓVIL) */
+body{
+  margin:0;
+  overflow-y:auto;        /* ✔ permite scroll */
+  overflow-x:hidden;
+  min-height:100vh;       /* ✔ evita cortes en móvil */
+  background:radial-gradient(circle at top,#0b3a7a,#041633);
+  font-family:'Great Vibes',cursive;
+  color:white;
+  text-align:center;
+}
+
+/* CONTENIDO */
+.container{
+  position:relative;
+  z-index:5;
+  padding:50px 20px;
+  min-height:100vh;       /* ✔ asegura espacio en móvil */
+}
+
+.title{ font-size:3.5em; }
+
+.gold{
+  font-size:2.8em;
+  color:#FFD700;
+  text-shadow:0 0 12px gold;
+}
+
+.name{
+  font-size:4em;
+  margin-top:20px;
+}
+
+/* CONTADOR */
+.countdown{
+  margin:25px auto;
+  font-size:2em;
+  color:#FFD700;
+  background:rgba(0,0,0,0.35);
+  padding:12px 20px;
+  border-radius:15px;
+  display:inline-block;
+  min-width:260px;
+}
+
+/* INFO */
+.info{
+  font-size:1.6em;
+  line-height:2;
+  margin-top:20px;
+}
+
+/* BOTÓN */
+button{
+  margin-top:25px;
+  padding:16px 30px;
+  border:none;
+  border-radius:40px;
+  background:linear-gradient(45deg,#FFD700,#fff2a6);
+  cursor:pointer;
+  font-weight:bold;
+}
+
+/* MÚSICA BOTÓN */
+#musicBtn{
+  display:none;
+  background:white;
+  color:black;
+}
+
+/* GLOBOS */
+.balloon{
+  position:absolute;
+  width:70px;
+  height:90px;
+  border-radius:50%;
+  animation:float 12s ease-in-out infinite;
+  z-index:1;
+}
+
+.balloon::before{
+  content:"";
+  position:absolute;
+  width:22px;
+  height:32px;
+  top:12px;
+  left:18px;
+  background:rgba(255,255,255,0.7);
+  border-radius:50%;
+}
+
+.string{
+  position:absolute;
+  width:2px;
+  height:70px;
+  background:#ccc;
+  top:85px;
+  left:50%;
+}
+
+/* cromados */
+.blue{ background:radial-gradient(circle,#6fb3ff,#0a2f6b); }
+.goldB{ background:radial-gradient(circle,#fff6c2,#caa000); }
+
+@keyframes float{
+  0%{ transform:translateY(110vh);}
+  50%{ transform:translateY(50vh) translateX(20px);}
+  100%{ transform:translateY(-120vh);}
+}
+
+/* CONFETI */
+.confetti{
+  position:absolute;
+  top:-10px;
+  width:8px;
+  height:14px;
+  animation:fall linear infinite;
+  z-index:1;
+}
+
+@keyframes fall{
+  0%{ transform:translateY(0) rotate(0deg);}
+  100%{ transform:translateY(110vh) rotate(360deg);}
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="startScreen">
+  <h1>Toca para abrir la invitación 🎉</h1>
+</div>
+
+<div class="container">
+
+<div class="title">¡Fiesta Sorpresa!</div>
+
+<div class="gold">75 Años</div>
+
+<div class="name">Jorge Ríos</div>
+
+<div class="countdown" id="countdown">Cargando...</div>
+
+<div class="info">
+31 | 05 | 2026<br>
+Hora: 12 del medio día<br>
+📍 D'Carlo Restaurante<br><br>
+(Valoraremos tu puntualidad para que realmente sea una sorpresa.)
+</div>
+
+<button onclick="confirmar()">Confirmar asistencia</button><br>
+<button id="musicBtn" onclick="playMusic()">🎵 Activar música</button>
+
+</div>
+
+<audio id="music" loop>
+<source src="https://cdn.pixabay.com/audio/2022/10/16/audio_2f5c9d0d3e.mp3">
+</audio>
+
+<script>
+
+/* 🇬🇹 GUATEMALA UTC -6 */
+const eventDate = new Date(Date.UTC(2026,4,31,18,0,0));
+
+function updateCountdown() {
+  const now = new Date();
+
+  const diff = eventDate.getTime() - now.getTime();
+
+  if (diff <= 0) {
+    document.getElementById("countdown").innerHTML = "🎉 ¡HOY ES EL EVENTO!";
+    return;
+  }
+
+  const totalSeconds = Math.floor(diff / 1000);
+
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  document.getElementById("countdown").innerHTML =
+    `${days} días • ${hours}h • ${minutes}m • ${seconds}s`;
+}
+
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+/* WHATSAPP */
+function confirmar(){
+  window.open("https://wa.me/50251124599?text=Confirmo asistencia 🎉");
+}
+
+/* MÚSICA */
+const music = document.getElementById("music");
+
+function playMusic(){
+  music.play();
+  document.getElementById("musicBtn").style.display="none";
+}
+
+music.play().catch(()=>{
+  document.getElementById("musicBtn").style.display="inline-block";
+});
+
+document.addEventListener("click",()=>{
+  music.play();
+},{once:true});
+
+/* GLOBOS */
+for(let i=0;i<14;i++){
+  let b=document.createElement("div");
+  b.className="balloon "+(i%2?"blue":"goldB");
+  b.style.left=Math.random()*100+"%";
+  b.style.animationDuration=(10+Math.random()*10)+"s";
+
+  let s=document.createElement("div");
+  s.className="string";
+  b.appendChild(s);
+
+  document.body.appendChild(b);
+};
+
+/* CONFETI */
+for(let i=0;i<80;i++){
+  let c=document.createElement("div");
+  c.className="confetti";
+  c.style.left=Math.random()*100+"%";
+  c.style.background=Math.random()>0.5?"#FFD700":"#4aa3ff";
+  c.style.animationDuration=(3+Math.random()*4)+"s";
+  c.style.animationDelay=Math.random()*5+"s";
+
+  document.body.appendChild(c);
+};
+
+document.getElementById("startScreen").addEventListener("click", function(){
+  this.style.display = "none";
+
+  // activar música cuando el usuario toca
+  const music = document.getElementById("music");
+  music.play().catch(()=>{});
+});
+
+</script>
+
+</body>
+</html>
